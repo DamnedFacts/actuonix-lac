@@ -1,3 +1,6 @@
+import struct
+import usb
+
 class LAC:
     SET_ACCURACY                = 0x01
     SET_RETRACT_LIMIT           = 0x02
@@ -24,16 +27,38 @@ class LAC:
 
     RESET                       = 0xFF
 
+    def __init__(self, vendorID, productID):
+        device = usb.core.find(vendorID, productID)  # 0x4D8 and 0xFC5F maybe?
+        if device is None:
+            raise Exception("No board found, ensure board is connected and powered and matching the IDs provided")
+
+        device.set_configuration()
+
+    # Take data and send it to LAC
+    def send_data(self, function, value):
+        if value < 0 || or value > 1023:
+            raise Exception("Value is OOB. Must be 2-byte integer in rage [0, 1023]")
+
+        data = struct.pack("BBB", function, value >> 8, value & 0xFF)
+        # TODO: send data itself
+
+    # How close to target distance is accepted
+    # value/1024 * stroke gives distance (assuming all mm?)
     def set_accuracy(self, value):
-        if value < 0:
-            value = 0
-        elif value > 1023:
-            value = 1023
+        send_data(self.SET_ACCURACY, value)
 
-        SET_ACCURACY
-
+    # How far back the actuator can go. A value
+    # of 0 hits the mechanical stop, but this
+    # is not recommended
     def set_retract_limit(self, value):
-        # data
+        send_data(self.SET_RETRACT_LIMIT, value)
 
+    # How far forward the actuator can go. A value
+    # of 1023 hits the mechanical stop, but this
+    # is not recommended
     def set_extend_limit(self, value):
-        # data
+        send_data(self.SET_EXTEND_LIMIT, value)
+
+    # Minimum speed before actuator is considered stalling
+    def set_movement_threshold(self, value):
+        send_data(self.SET_MOVEMENT_THRESHOLD, value)

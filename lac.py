@@ -46,19 +46,25 @@ class LAC:
         return response[2] << 8 + response[1]  # High byte moved left, then tack on the low byte
 
     # How close to target distance is accepted
-    # value/1024 * stroke gives distance (assuming all mm?)
+    # value/1024 * stroke gives distance, where stroke is max
+    # extension length (all values in mm). Round to nearest
+    # integer
     def set_accuracy(self, value):
         send_data(self.SET_ACCURACY, value)
 
     # How far back the actuator can go. A value
     # of 0 hits the mechanical stop, but this
-    # is not recommended
+    # is not recommended. The value you want to send
+    # is calculated by (distance * 1023)/stroke where
+    # distance is intended distance and stroke is max
+    # extension length, all values in mm. Round to
+    # nearest integer
     def set_retract_limit(self, value):
         send_data(self.SET_RETRACT_LIMIT, value)
 
     # How far forward the actuator can go. A value
     # of 1023 hits the mechanical stop, but this
-    # is not recommended
+    # is not recommended. See above for math
     def set_extend_limit(self, value):
         send_data(self.SET_EXTEND_LIMIT, value)
 
@@ -133,17 +139,31 @@ class LAC:
         send_data(self.GET_FEEDBACK)
 
 
-    # Set 
+    # Set the LAC's position. This shouldn't be shocking, given
+    # like ya know the name of the function? Note that this will
+    # disable RC, I, and V inputs until reboot. To know what
+    # number to send, do (distance * 1023)/stroke where distance
+    # is intended position as a distance from the back hardstop,
+    # in mm, and stroke is the maximum length of extension, in mm.
+    # Be sure to round your result to the nearest integer!
     def set_position(self, value):
         send_data(self.SET_POSITION, value)
 
+    # This command is not documented, but it's probably
+    # easy to infer and just guess via trial by fire
     def set_speed(self, value):
         send_data(self.SET_SPEED, value)
 
 
+    # Saves current config to EEPROM and disables all four
+    # potentiometers. On reboot, these values will continue being used
+    # instead of the potentiometer values. Analog inputs function
+    # as normal either way
     def disable_manual(self):
         send_data(self.DISABLE_MANUAL)
 
 
+    # Enables manual control potentiometers and resets config
+    # to factory default
     def reset(self):
         send_data(self.RESET)

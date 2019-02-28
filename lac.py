@@ -50,7 +50,7 @@ class LAC:
     # extension length (all values in mm). Round to nearest
     # integer
     def set_accuracy(self, value):
-        send_data(self.SET_ACCURACY, value)
+        self.send_data(self.SET_ACCURACY, value)
 
     # How far back the actuator can go. A value
     # of 0 hits the mechanical stop, but this
@@ -60,61 +60,61 @@ class LAC:
     # extension length, all values in mm. Round to
     # nearest integer
     def set_retract_limit(self, value):
-        send_data(self.SET_RETRACT_LIMIT, value)
+        self.send_data(self.SET_RETRACT_LIMIT, value)
 
     # How far forward the actuator can go. A value
     # of 1023 hits the mechanical stop, but this
     # is not recommended. See above for math
     def set_extend_limit(self, value):
-        send_data(self.SET_EXTEND_LIMIT, value)
+        self.send_data(self.SET_EXTEND_LIMIT, value)
 
     # Minimum speed before actuator is considered stalling
     def set_movement_threshold(self, value):
-        send_data(self.SET_MOVEMENT_THRESHOLD, value)
+        self.send_data(self.SET_MOVEMENT_THRESHOLD, value)
 
     # Timeout (ms) before actuator shuts off after stalling
     def set_stall_time(self, value):
-        send_data(self.SET_STALL_TIME, value)
+        self.send_data(self.SET_STALL_TIME, value)
 
     # When feedback-set>this, set speed to maximum
     def set_pwm_threshold(self, value):
-        send_data(self.SET_PWM_THRESHOLD, value)
+        self.send_data(self.SET_PWM_THRESHOLD, value)
 
     # Compared to measured speed to determine
     # PWM increase (prevents stalls). Normally
     # equl to movement threshold
     def set_derivative_threshold(self, value):
-        send_data(self.SET_DERIVATIVE_THRESHOLD, value)
+        self.send_data(self.SET_DERIVATIVE_THRESHOLD, value)
 
     # Maximum value the D term can contribute to control speed
     def set_max_derivative(self, value):
-        send_data(self.SET_MAX_DERIVATIVE, value)
+        self.send_data(self.SET_MAX_DERIVATIVE, value)
 
     # Minimum value the D term can contribute to control speed
     def set_min_derivative(self, value):
-        send_data(self.SET_MIN_DERIVATIVE, value)
+        self.send_data(self.SET_MIN_DERIVATIVE, value)
 
     # Speed the actuator runs at when outside the pwm threshold
     # 1023 enables top speed, though actuator may try to move
     # faster to avoid stalling
     def set_max_pwm_value(self, value):
-        send_data(self.SET_MAX_PWM_VALUE, value)
+        self.send_data(self.SET_MAX_PWM_VALUE, value)
 
     # Minimum PWM value applied by PD
     def set_min_pwm_value(self, value):
-        send_data(self.SET_MIN_PWM_VALUE, value)
+        self.send_data(self.SET_MIN_PWM_VALUE, value)
 
     # Higher value = faster approach to target, but also more
     # overshoot
     def set_proportional_gain(self, value):
-        send_data(self.SET_PROPORTIONAL_GAIN, value)
+        self.send_data(self.SET_PROPORTIONAL_GAIN, value)
 
     # Rate at which differential portion of controller increases
     # while stalling. Not a /real/ differential term, but
     # similar effect. When stalling, derivtive term is
     # incremented to attempt escape
     def set_derivative_gain(self, value):
-        send_data(self.SET_DERIVATIVE_GAIN, value)
+        self.send_data(self.SET_DERIVATIVE_GAIN, value)
 
     # Number of samples used in filtering the RC input signal
     # before the actuator moves. High value = more stability,
@@ -122,21 +122,21 @@ class LAC:
     # This does NOT affect filter feedback delay; control
     # response to valid input signals is unaffected
     def set_average_rc(self, value=4):
-        send_data(self.SET_AVERAGE_RC, value)
+        self.send_data(self.SET_AVERAGE_RC, value)
 
     # Number of samples used in filtering the feedback and analog
     # input signals, if active. Similar delay effect to
     # set_average_rc, but this DOES affect control response. PD
     # loop values may need to be retuned when adjusting this
     def set_average_adc(self, value):
-        send_data(self.SET_AVERAGE_ADC, value)
+        self.send_data(self.SET_AVERAGE_ADC, value)
 
 
     # Causes actuator to send a feedback packet containing its
     # current position. This is read directly from ADC and might
     # not be equal to the set point if yet unreached
     def get_feedback(self):
-        send_data(self.GET_FEEDBACK)
+        self.send_data(self.GET_FEEDBACK)
 
 
     # Set the LAC's position. This shouldn't be shocking, given
@@ -147,12 +147,12 @@ class LAC:
     # in mm, and stroke is the maximum length of extension, in mm.
     # Be sure to round your result to the nearest integer!
     def set_position(self, value):
-        send_data(self.SET_POSITION, value)
+        self.send_data(self.SET_POSITION, value)
 
     # This command is not documented, but it's probably
     # easy to infer and just guess via trial by fire
     def set_speed(self, value):
-        send_data(self.SET_SPEED, value)
+        self.send_data(self.SET_SPEED, value)
 
 
     # Saves current config to EEPROM and disables all four
@@ -160,10 +160,10 @@ class LAC:
     # instead of the potentiometer values. Analog inputs function
     # as normal either way
     def disable_manual(self):
-        send_data(self.DISABLE_MANUAL)
+        self.send_data(self.DISABLE_MANUAL)
 
 
     # Enables manual control potentiometers and resets config
     # to factory default
     def reset(self):
-        send_data(self.RESET)
+        self.send_data(self.RESET)

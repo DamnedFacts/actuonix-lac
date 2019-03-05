@@ -38,11 +38,12 @@ class LAC:
     # Take data and send it to LAC
     def send_data(self, function, value=0):
         if value < 0 or value > 1023:
-            raise Exception("Value is OOB. Must be 2-byte integer in rage [0, 1023]")
+            raise ValueError("Value is OOB. Must be 2-byte integer in rage [0, 1023]")
 
-        data = struct.pack("BBB", function, value & 0xFF, (value & 0xFF00) >> 8)  # High byte moved down, low byte masked in
+        data = struct.pack(b'BBB', function, value & 0xFF, (value & 0xFF00) >> 8)  # Low byte masked in, high byte masked and moved down
         self.device.write(1, data, 100)  # Magic numbers from the PyUSB tutorial
-        time.sleep(.05)  # Just to be sure it's all well and sent
+        print(data)
+        time.sleep(1)  # Just to be sure it's all well and sent
         response = self.device.read(0x81, 3, 100)  # 3 because there's three bytes to a packet
         return (response[2] << 8) + response[1]  # High byte moved left, then tack on the low byte
 

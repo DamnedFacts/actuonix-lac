@@ -42,8 +42,7 @@ class LAC:
 
         data = struct.pack(b'BBB', function, value & 0xFF, (value & 0xFF00) >> 8)  # Low byte masked in, high byte masked and moved down
         self.device.write(1, data, 100)  # Magic numbers from the PyUSB tutorial
-        print(data)
-        time.sleep(1)  # Just to be sure it's all well and sent
+        time.sleep(.05)  # Just to be sure it's all well and sent
         response = self.device.read(0x81, 3, 100)  # 3 because there's three bytes to a packet
         return (response[2] << 8) + response[1]  # High byte moved left, then tack on the low byte
 
@@ -51,7 +50,7 @@ class LAC:
     # value/1024 * stroke gives distance, where stroke is max
     # extension length (all values in mm). Round to nearest
     # integer
-    def set_accuracy(self, value):
+    def set_accuracy(self, value=4):
         self.send_data(self.SET_ACCURACY, value)
 
     # How far back the actuator can go. A value
@@ -84,7 +83,7 @@ class LAC:
 
     # Compared to measured speed to determine
     # PWM increase (prevents stalls). Normally
-    # equl to movement threshold
+    # equal to movement threshold
     def set_derivative_threshold(self, value):
         self.send_data(self.SET_DERIVATIVE_THRESHOLD, value)
 

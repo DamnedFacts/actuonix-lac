@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "actuonix_lac"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python module for controlling an Actuonix/Firgelli Linear Actuator Control Board"
 authors = ["Jerimiah Daley", "Richard Emile Sarkis <rich@sark.is>"]
 repository = "https://github.com/DamnedFacts/actuonix-lac"

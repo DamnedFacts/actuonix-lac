@@ -13,6 +13,7 @@ pyusb = "^1.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^4.6"
+bump2version = { version="^0.5.11", python = "^3.5" }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

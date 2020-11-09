@@ -23,3 +23,10 @@ or::
     loop.run_until_complete(s.get_feedback())
 
 Obviously when inside an async function just use await instead of loop.run_until_complete.
+
+There is also CLI interface (but due to USB init taking some time you should not use it in loops etc)::
+
+    laccontrol get-position # returns the raw position
+    laccontrol set-position 316 # sets target position to 316
+
+Remember that you must install the extra feature "cli" (or "all") to use the CLI entrypoint.

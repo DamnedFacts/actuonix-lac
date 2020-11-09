@@ -7,9 +7,17 @@ repository = "https://github.com/DamnedFacts/actuonix-lac"
 license = "MIT"
 readme = "README.rst"
 
+[tool.poetry.scripts]
+laccontrol = "actuonix_lac.console:laccontrol"
+
 [tool.poetry.dependencies]
 python = "^3.7"
 pyusb = "^1.1"
+click = { version = "^7.1", optional = true}
+
+[tool.poetry.extras]
+cli = ["click"]
+all = ["click"]
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1"

@@ -2,7 +2,7 @@
 name = "actuonix_lac"
 version = "1.0.0"
 description = "Python module for controlling an Actuonix/Firgelli Linear Actuator Control Board"
-authors = ["Jerimiah Daley", "Richard Emile Sarkis <rich@sark.is>"]
+authors = ["Jerimiah Daley", "Richard Emile Sarkis <rich@sark.is>", "Eero af Heurlin <eero.afheurlin@iki.fi>"]
 repository = "https://github.com/DamnedFacts/actuonix-lac"
 license = "MIT"
 readme = "README.rst"

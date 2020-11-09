@@ -21,9 +21,9 @@ class LAC:
     def send_data(self, command: Union[int, Commands], value: int = 0) -> int:
         """Take data and send it to LAC"""
         if value < 0 or value > 1023:
-            raise ValueError("Value is OOB. Must be 2-byte integer in rage [0, 1023], was %s".format(value))
+            raise ValueError("Value is OOB. Must be 2-byte integer in rage [0, 1023], was {}".format(value))
         if int(command) not in Commands.values():
-            raise ValueError("command is OOB, see the Commands enum for valid values. was %s".format(command))
+            raise ValueError("command is OOB, see the Commands enum for valid values. was {}".format(command))
 
         data = struct.pack(
             b"BBB", int(command), value & 0xFF, (value & 0xFF00) >> 8

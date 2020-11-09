@@ -3,8 +3,9 @@ from typing import Union
 import threading
 
 import usb.core  # type: ignore
+import usb.util  # type: ignore
 
-from .common import Commands, pyusb_blocking
+from .common import Commands, pyusb_blocking, device_config_init_graceful
 
 
 class LAC:  # pylint: disable=R0904
@@ -17,7 +18,7 @@ class LAC:  # pylint: disable=R0904
         if self.device is None:
             raise Exception("No board found, ensure board is connected and powered and matching the IDs provided")
         self._lock = threading.Lock()
-        self.device.set_configuration()
+        device_config_init_graceful(self.device)
 
     def send_data(self, command: Union[int, Commands], value: int = 0) -> int:
         """Take data and send it to LAC"""
@@ -125,3 +126,8 @@ class LAC:  # pylint: disable=R0904
     def reset(self) -> None:
         """Enables manual control potentiometers and resets config to factory default"""
         self.send_data(Commands.RESET)
+
+    def __del__(self) -> None:
+        """Release the device"""
+        if self.device:
+            usb.util.dispose_resources(self.device)

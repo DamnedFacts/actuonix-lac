@@ -4,6 +4,8 @@ import enum
 import time
 import struct
 
+import usb.core  # type: ignore
+
 
 class Commands(enum.IntEnum):
     """The commands"""
@@ -49,3 +51,13 @@ def pyusb_blocking(command: int, value: int, device: Any) -> int:
     time.sleep(0.05)  # Just to be sure it's all well and sent
     response = device.read(0x81, 3, 100)  # 3 because there's three bytes to a packet
     return int((response[2] << 8) + response[1])  # High byte moved left, then tack on the low byte
+
+
+def device_config_init_graceful(device: Any) -> None:
+    """Make sure configuration is selected but do not reset selected config"""
+    try:
+        cfg = device.get_active_configuration()
+    except usb.core.USBError:
+        cfg = None
+    if cfg is None:
+        device.set_configuration()

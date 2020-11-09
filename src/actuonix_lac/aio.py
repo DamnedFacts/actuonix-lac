@@ -4,7 +4,7 @@ import asyncio
 
 import usb.core  # type: ignore
 
-from .common import Commands, pyusb_blocking
+from .common import Commands, pyusb_blocking, device_config_init_graceful
 
 
 class AsyncLAC:  # pylint: disable=R0904
@@ -17,11 +17,7 @@ class AsyncLAC:  # pylint: disable=R0904
         if self.device is None:
             raise RuntimeError("No board found, ensure board is connected and powered and matching the IDs provided")
         self._lock = asyncio.Lock()
-        loop = asyncio.get_event_loop()
-        if loop.is_running():
-            loop.create_task(loop.run_in_executor(None, self.device.set_configuration))
-        else:
-            self.device.set_configuration()
+        device_config_init_graceful(self.device)
 
     async def send_data(self, command: Union[int, Commands], value: int = 0) -> int:
         """Take data and send it to LAC"""
@@ -130,3 +126,8 @@ class AsyncLAC:  # pylint: disable=R0904
     async def reset(self) -> None:
         """Enables manual control potentiometers and resets config to factory default"""
         await self.send_data(Commands.RESET)
+
+    def __del__(self) -> None:
+        """Release the device"""
+        if self.device:
+            usb.util.dispose_resources(self.device)

@@ -1,6 +1,8 @@
 """Common enums etc"""
-from typing import Iterable
+from typing import Iterable, Any
 import enum
+import time
+import struct
 
 
 class Commands(enum.IntEnum):
@@ -36,3 +38,14 @@ class Commands(enum.IntEnum):
     def values(cls) -> Iterable[int]:
         """List all command int values"""
         return (reg.value for reg in cls)
+
+
+def pyusb_blocking(command: int, value: int, device: Any) -> int:
+    """Handle the blocking pyusb send and read"""
+    data = struct.pack(
+        b"BBB", int(command), value & 0xFF, (value & 0xFF00) >> 8
+    )  # Low byte masked in, high byte masked and moved down
+    device.write(1, data, 100)  # Magic numbers from the PyUSB tutorial
+    time.sleep(0.05)  # Just to be sure it's all well and sent
+    response = device.read(0x81, 3, 100)  # 3 because there's three bytes to a packet
+    return int((response[2] << 8) + response[1])  # High byte moved left, then tack on the low byte

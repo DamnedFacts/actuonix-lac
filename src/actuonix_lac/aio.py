@@ -17,7 +17,11 @@ class AsyncLAC:  # pylint: disable=R0904
         if self.device is None:
             raise RuntimeError("No board found, ensure board is connected and powered and matching the IDs provided")
         self._lock = asyncio.Lock()
-        asyncio.create_task(asyncio.get_event_loop().run_in_executor(None, self.device.set_configuration))
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            loop.create_task(loop.run_in_executor(None, self.device.set_configuration))
+        else:
+            self.device.set_configuration()
 
     async def send_data(self, command: Union[int, Commands], value: int = 0) -> int:
         """Take data and send it to LAC"""

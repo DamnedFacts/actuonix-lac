@@ -1,5 +1,6 @@
 """The old blocking implementation"""
 from typing import Union
+import threading
 
 import usb.core  # type: ignore
 
@@ -9,11 +10,13 @@ from .common import Commands, pyusb_blocking
 class LAC:  # pylint: disable=R0904
     """Communicate with the LAC board (blocking version)"""
 
+    _lock: threading.Lock
+
     def __init__(self, vendorID: int = 0x4D8, productID: int = 0xFC5F):
         self.device = usb.core.find(idVendor=vendorID, idProduct=productID)  # Defaults for our LAC; give yours a test
         if self.device is None:
             raise Exception("No board found, ensure board is connected and powered and matching the IDs provided")
-
+        self._lock = threading.Lock()
         self.device.set_configuration()
 
     def send_data(self, command: Union[int, Commands], value: int = 0) -> int:
@@ -22,7 +25,8 @@ class LAC:  # pylint: disable=R0904
             raise ValueError("Value is OOB. Must be 2-byte integer in rage [0, 1023], was {}".format(value))
         if int(command) not in Commands.values():
             raise ValueError("command is OOB, see the Commands enum for valid values. was {}".format(command))
-        return pyusb_blocking(int(command), value, self.device)
+        with self._lock:
+            return pyusb_blocking(int(command), value, self.device)
 
     def set_accuracy(self, value: int = 4) -> None:
         """How close to target distance is accepted value/1024 * stroke gives distance, where stroke is max

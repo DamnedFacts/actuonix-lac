@@ -8,7 +8,7 @@ import usb.core
 from .common import Commands
 
 
-class LAC:
+class LAC:  # pylint: disable=R0904
     """Communicate with the LAC board (blocking version)"""
 
     def __init__(self, vendorID=0x4D8, productID=0xFC5F):

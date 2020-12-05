@@ -1,0 +1,66 @@
+[tool.poetry]
+name = "actuonix_lac"
+version = "1.0.0"
+description = "Python module for controlling an Actuonix/Firgelli Linear Actuator Control Board"
+authors = ["Jerimiah Daley", "Richard Emile Sarkis <rich@sark.is>", "Eero af Heurlin <eero.afheurlin@iki.fi>"]
+repository = "https://github.com/DamnedFacts/actuonix-lac"
+license = "MIT"
+readme = "README.rst"
+
+[tool.poetry.scripts]
+laccontrol = "actuonix_lac.console:laccontrol"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pyusb = "^1.1"
+click = { version = "^7.1", optional = true}
+
+[tool.poetry.extras]
+cli = ["click"]
+all = ["click"]
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.1"
+bump2version = "^0.5.11"
+pre-commit = "^1.20"
+pylint = "^2.5"
+black = "=20.08.b1"
+bandit = "^1.6"
+mypy = "^0.790"
+pytest-asyncio = "^0.14"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+target-version = ['py37']
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  |  __pycache__
+)
+'''
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint.messages_control]
+disable=["fixme", "W1202"]
+
+[tool.coverage.run]
+omit = ["tests/*"]
+branch = true

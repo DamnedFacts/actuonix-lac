@@ -1,4 +1,4 @@
-import usb.core
+from usb.core import find as find_usb
 from typing import Tuple
 from struct import pack
 from time import sleep
@@ -48,7 +48,7 @@ class LAC:
 		if stroke < 0 or vendorID < 0 or productID < 0:
 			raise ValueError("No parameters can be negative values")
 
-		self.device = usb.core.find(idVendor = vendorID, idProduct = productID)
+		self.device = find_usb(idVendor = vendorID, idProduct = productID)
 		if self.device is None:
 			raise Exception("No board found, ensure board is connected and powered with matching ID")
 
@@ -247,8 +247,8 @@ class LAC:
 
 		Using this command disables RC, I, and V inputs until reboot, but enables USB control.
 
-		This is the only command with a response that isn't a simple echo. Instead, the second value of the tuple
-		represents the arm's current position
+		This command's response isn't a simple echo. Instead, the second value of the tuple represents the arm's current
+		position
 		"""
 		return self.send_data(self.SET_POSITION, int(round(distance/self.stroke * 1023)))
 

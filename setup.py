@@ -1,10 +1,10 @@
 from setuptools import setup
 
 setup(name='actuonix_lac',
-      version='0.1',
-      description='Python-based controller for Actuonix Linear Actuator Arm (LAC)',
+      version='0.2',
+      description='Python-based controller for Actuonix Linear Actuator Control (LAC)',
       url='https://github.com/DamnedFacts/actuonix-lac',
-      author='Jerimiah Daley, and Richard Emile Sarkis',
+      author='Devinaut and Richard Emile Sarkis',
       author_email='rich@sark.is',
       license='MIT',
       packages=['actuonix_lac'],
